@@ -21,7 +21,9 @@ def load_obj(name):
 
 GLYPH_OUT_DIR = "./glyph_out"
 
-dl = []  # load_obj("trial")
+
+# TODO: modify logic
+dl = []
 for f_name in os.listdir(GLYPH_OUT_DIR):
     dl.append(load_obj(os.path.join(GLYPH_OUT_DIR, f_name)))
 
