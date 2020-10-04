@@ -1,10 +1,11 @@
 import pickle
 import apache_beam as beam
 import pyarrow
+import os
 
 
 def load_obj(name):
-    with open(f"{name}.pkl", "rb") as f:
+    with open(f"{name}", "rb") as f:
         return pickle.load(f)
 
 
@@ -18,13 +19,14 @@ def load_obj(name):
 # } [(t[0], t[1]) for t in template.items()]
 
 
-d = load_obj("trial")
+GLYPH_OUT_DIR = "./glyph_out"
+
+dl = []  # load_obj("trial")
+for f_name in os.listdir(GLYPH_OUT_DIR):
+    dl.append(load_obj(os.path.join(GLYPH_OUT_DIR, f_name)))
+
 with beam.Pipeline() as p:
-    records = p | "Read" >> beam.Create(
-        [
-            d,
-        ]
-    )
+    records = p | "Read" >> beam.Create(dl)
     _ = records | "Write" >> beam.io.WriteToParquet(
         "trial/trial_out",
         pyarrow.schema(
@@ -38,4 +40,3 @@ with beam.Pipeline() as p:
             ]
         ),
     )
-print("hi")
